@@ -6,7 +6,7 @@ provider "aws" {
 resource "aws_instance" "my_ec2" {
   ami           = "ami-07eef52105e8a2059"  # Use a valid AMI for your region
   instance_type = "t2.micro"
-  key_name      = "destiny"                 # Replace with your AWS key pair
+  key_name      = "blessed"                 # Replace with your AWS key pair
 
   tags = {
     Name = "GitHub-Terraform-EC2"
