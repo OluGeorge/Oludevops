@@ -1,1 +1,1 @@
-Successfuuly deployed my fanily html file to S3. Great isnt it?
+Successfuuly deployed my fanily html file to AWS S3. Great isnt it?
