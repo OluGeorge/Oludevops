@@ -36,8 +36,12 @@ jobs:
 
       - name: Plan Terraform
         run: terraform plan
-        working-directory: /
+        working-directory: terraform
 
       - name: Apply Terraform
         run: terraform apply -auto-approve
-        working-directory: /
+        working-directory: terraform
+
+      - name: Destroy Terraform
+        run: terraform destroy -auto-approve
+        working-directory: terraform
