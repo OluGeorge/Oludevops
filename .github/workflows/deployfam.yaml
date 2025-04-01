@@ -1,0 +1,31 @@
+name: Deploy to EC2 Using GitHub Access Token
+
+on:
+  push:
+    branches:
+      - main  # Triggers deployment when code is pushed to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install SSH Client
+        run: sudo apt-get install -y openssh-client
+
+      - name: Deploy Code to EC2
+        env:
+          EC2_USER: ubuntu
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          sshpass -p "${GITHUB_ACCESS_TOKEN}" ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+            cd /home/ubuntu/app
+            git clone https://OluGeorge:${GITHUB_ACCESS_TOKEN}@github.com/OluGeorge/Oludevops.git || (cd Oludevops && git pull origin main)
+            cd Oludevops
+            #npm install  # Run dependencies installation (modify if needed)
+           # pm2 restart all || pm2 start app.js  # Restart application
+          EOF
