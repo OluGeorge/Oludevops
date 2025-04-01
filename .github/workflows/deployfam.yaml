@@ -23,7 +23,7 @@ jobs:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
           sshpass -p "${GITHUB_ACCESS_TOKEN}" ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
-            cd /home/ubuntu/app
+            cd /var/www/html/familydevops/Oludevops
             git clone https://OluGeorge:${GITHUB_ACCESS_TOKEN}@github.com/OluGeorge/Oludevops.git || (cd Oludevops && git pull origin main)
             cd Oludevops
             #npm install  # Run dependencies installation (modify if needed)
