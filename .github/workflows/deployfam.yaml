@@ -14,22 +14,25 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up SSH Key
+        shell: bash
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-          shell: bash
 
       - name: Deploy Code to EC2
+        shell: bash
         run: |
           rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-          ./ ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu//var/www/html/familydevops/Oludevops
+          ./ ubuntu@${{ secrets.EC2_HOST }}:/var/www/html/familydevops/Oludevops
 
       - name: Restart Application on EC2
+        shell: bash
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             cd /var/www/html
-           # docker-compose down
-           # docker-compose up -d --build
+            # Uncomment these lines if you are using Docker Compose
+            # docker-compose down
+            # docker-compose up -d --build
           EOF
