@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # Runs when code is pushed to the main branch
+      - main  # Change to the branch you want to deploy from
 
 jobs:
   deploy:
@@ -11,25 +11,33 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3  # Pulls your GitHub repo into the runner
+        uses: actions/checkout@v3
 
       - name: Set up SSH Key
         run: |
-         mkdir -p ~/.ssh
-         chmod 700 ~/.ssh
-         echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-         chmod 600 ~/.ssh/id_rsa
-         ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy Code to EC2
         run: |
           rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-          ./ ubuntu@${{ secrets.EC2_HOST }}:/var/www/html/familydevops/Oludevops
+          ./ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/app/
 
-      - name: Restart Application on EC2
+      - name: Install Dependencies and Restart Application
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /var/www/html/familydevops/Oludevops
-           # pm2 restart all || pm2 start app.js  # Restart a Node.js app (modify as needed)
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -e
+            sudo apt update -y && sudo apt install -y nginx git nodejs npm
+
+            cd /home/ubuntu/app
+            npm install  # Change for Python apps (pip install -r requirements.txt)
+
+            sudo systemctl restart nginx
+
+            #pm2 stop all || true
+            #pm2 start index.js  # Change index.js to your app file
+            #pm2 save
+            #pm2 startup
           EOF
