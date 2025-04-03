@@ -19,6 +19,7 @@ jobs:
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          shell: bash
 
       - name: Deploy Code to EC2
         run: |
