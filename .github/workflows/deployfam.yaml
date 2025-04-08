@@ -17,19 +17,19 @@ jobs:
       run: |
         echo "Setting up SSH key..."
         mkdir -p ~/.ssh
-        echo "${{ secrets.MY_HOST_KEY }}" > ~/.ssh/id_ed25519
-        chmod 600 ~/.ssh/id_ed25519
-        ssh-keyscan -H ${{ secrets.HOST_KEY }} >> ~/.ssh/known_hosts
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
     - name: Test SSH connection
       run: |
         echo "Testing SSH connection to EC2..."
-        ssh -i ~/.ssh/id_ed25519 ${{ secrets.HOST_KEY }} "echo '✅ SSH connection successful!'"
+        ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_HOST }} "echo '✅ SSH connection successful!'"
 
     - name: Connect to EC2 and run commands
       run: |
         echo "Running commands on EC2..."
-        ssh -i ~/.ssh/id_ed25519 ${{ secrets.HOST_KEY }} << 'EOF'
+        ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_HOST }} << 'EOF'
           echo "🛠️ Logged into EC2!"
           # Example: cd into your project and pull latest code
           cd ~/my-app  # replace with your actual app path
