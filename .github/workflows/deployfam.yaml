@@ -3,36 +3,41 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main
+      - main  # change this to your deployment branch if different
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up SSH Key
-        shell: bash
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+    - name: Set up SSH key
+      run: |
+        echo "Setting up SSH key..."
+        mkdir -p ~/.ssh
+        echo "${{ secrets.MY_HOST_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -H ${{ secrets.MY_HOST_KEY }} >> ~/.ssh/known_hosts
 
-      - name: Deploy Code to EC2
-        shell: bash
-        run: |
-          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-          ./ ubuntu@${{ secrets.EC2_HOST }}:/var/www/html/familydevops/Oludevops
+    - name: Test SSH connection
+      run: |
+        echo "Testing SSH connection to EC2..."
+        ssh -i ~/.ssh/id_ed25519 ${{ secrets.HOST_KEY }} "echo '✅ SSH connection successful!'"
 
-      - name: Restart Application on EC2
-        shell: bash
-        run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /var/www/html
-            # Uncomment these lines if you are using Docker Compose
-            # docker-compose down
-            # docker-compose up -d --build
-          EOF
+    - name: Connect to EC2 and run commands
+      run: |
+        echo "Running commands on EC2..."
+        ssh -i ~/.ssh/id_ed25519 ${{ secrets.HOST_KEY }} << 'EOF'
+          echo "🛠️ Logged into EC2!"
+          # Example: cd into your project and pull latest code
+          cd ~/my-app  # replace with your actual app path
+          git pull origin main
+          
+          # Example: restart app (Node.js/PM2 or Docker etc.)
+          # npm install
+          # pm2 restart app
+
+          echo "🚀 Deployment completed!"
+        EOF
