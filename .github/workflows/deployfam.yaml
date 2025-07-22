@@ -32,7 +32,7 @@ jobs:
         ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_HOST }} << 'EOF'
           echo "🛠️ Logged into EC2!"
           # Example: cd into your project and pull latest code
-          cd ~/my-app  # replace with your actual app path
+          cd ~/home/ubuntu/app/Oludevops  # replace with your actual app path
           git pull origin main
           
           # Example: restart app (Node.js/PM2 or Docker etc.)
