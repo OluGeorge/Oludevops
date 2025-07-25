@@ -19,7 +19,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         source: "./*"
-        target: "/home/ubuntu/app/Oludevops"
+        target: "/home/ubuntu/app/Oludevops/family.html"
 
     - name: Move to Nginx directory
       uses: appleboy/ssh-action@v0.1.10
@@ -29,5 +29,5 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           sudo rm -rf /var/www/html/*
-          sudo cp -r ~/html-deploy/* /var/www/html/
+          sudo cp -r ~/family.html/* /var/www/html/
           sudo chown -R www-data:www-data /var/www/html
