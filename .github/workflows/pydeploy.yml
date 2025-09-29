@@ -30,6 +30,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/python
-            pip3 install -r requirements.txt
+           # pip3 install -r requirements.txt
            # pm2 stop all || true
            # pm2 start "gunicorn -b 0.0.0.0:5000 app:app" --name python-app
