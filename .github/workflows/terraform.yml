@@ -38,5 +38,5 @@ jobs:
         run: terraform plan -out=tfplan
 
       - name: Apply Terraform (Provision EC2)
-        working-directory:  .github/workflows/terraform
+        working-directory:  ./Terraform
         run: terraform apply -auto-approve tfplan
