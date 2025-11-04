@@ -26,17 +26,17 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Initialize Terraform
-        working-directory: ./terraform
+        working-directory: .github/workflows/terraform
         run: terraform init
 
       - name: Validate Terraform
-        working-directory: ./terraform
+        working-directory: .github/workflows/terraform
         run: terraform validate
 
       - name: Plan Terraform Changes
-        working-directory: ./terraform
+        working-directory: .github/workflows/terraform
         run: terraform plan -out=tfplan
 
       - name: Apply Terraform (Provision EC2)
-        working-directory: ./terraform
+        working-directory:  .github/workflows/terraform
         run: terraform apply -auto-approve tfplan
